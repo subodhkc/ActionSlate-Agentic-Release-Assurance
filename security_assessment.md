@@ -69,15 +69,16 @@ node --check app/static/app.js
 
 Verified result at assessment time:
 
-- 14 of 14 Python tests passed;
+- 15 of 15 Python tests passed;
 - JavaScript syntax passed;
 - the locked dependency installation succeeded.
 
 The tests cover deterministic `UNKNOWN` handling, safe-plan exclusion,
-simulation-only receipts, structured interpretation, canonical request
-rejection, rate limiting, output bounds, sanitized failures, browser security
-headers, HMAC capability integrity, plan binding, tamper rejection, expiry,
-forged execution rejection, and valid capability-gated simulation.
+simulation-only receipts, structured interpretation, one bounded retry after a
+transient invalid structured response, canonical request rejection, rate
+limiting, output bounds, sanitized failures, browser security headers, HMAC
+capability integrity, plan binding, tamper rejection, expiry, forged execution
+rejection, and valid capability-gated simulation.
 
 ## Manual live validation
 
