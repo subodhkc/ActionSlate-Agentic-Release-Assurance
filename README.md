@@ -1,5 +1,7 @@
 # ActionSlate — Agentic Release Assurance
 
+**Live demo:** https://haiec.replit.app/
+
 ActionSlate demonstrates a control boundary for consequential media agents:
 
 > The agent can execute more than the available evidence authorizes.
@@ -28,6 +30,14 @@ Gemini performs semantic discovery and decomposition. It does **not** authorize
 actions. The final ALLOW, REVIEW, BLOCK, and UNKNOWN boundary is ordinary,
 inspectable Python logic in `app/assurance.py`. UNKNOWN is never treated as
 approval.
+
+## What is live, deterministic, and simulated
+
+- **Live:** Gemini 2.5 Flash interpretation on Vertex AI.
+- **Deterministic:** evidence-backed Greenlight evaluation and safe-subset
+  extraction.
+- **Simulated:** external publishing, voice generation, and advertising side
+  effects.
 
 ## P0 evidence pack
 
@@ -73,9 +83,10 @@ Then start the configured workflow or run:
 uv run uvicorn main:app --host 0.0.0.0 --port 5000
 ```
 
-Open the web preview. The one-page experience runs the Eclipse assurance
-scenario through Gemini and renders the Greenlight Diff. Select **Apply safe
-plan** to produce the simulation-only receipt.
+Open the web preview and click **Run live assurance**. The one-page experience
+runs the fixed Eclipse Protocol command through Gemini and renders the
+Greenlight Diff. Select **Apply safe plan** to produce the simulation-only
+receipt.
 
 ## API checks
 

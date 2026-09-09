@@ -1,14 +1,11 @@
-const DEFAULT_REQUEST =
-  "Launch the Eclipse Protocol trailer worldwide tonight. Localize it for France and Spain using Ava's voice, then maximize paid reach.";
-
 const requestField = document.querySelector("#producer-request");
 const assureButton = document.querySelector("#assure-button");
 const applyButton = document.querySelector("#apply-button");
-const resetButton = document.querySelector("#reset-request");
-const charCount = document.querySelector("#char-count");
 const errorBanner = document.querySelector("#error-banner");
 const runStatus = document.querySelector("#run-status");
 const runtimeState = document.querySelector("#runtime-state");
+const runtimeDot = document.querySelector("#runtime-dot");
+const topbarRuntimeDot = document.querySelector("#topbar-runtime-dot");
 const evidenceRuntime = document.querySelector("#evidence-runtime");
 const actionCount = document.querySelector("#action-count");
 const actionCountDetail = document.querySelector("#action-count-detail");
@@ -18,6 +15,7 @@ const proofModel = document.querySelector("#proof-model");
 const proofLocation = document.querySelector("#proof-location");
 const proofProject = document.querySelector("#proof-project");
 const interpretationState = document.querySelector("#interpretation-state");
+const geminiVerification = document.querySelector("#gemini-verification");
 const requestSummary = document.querySelector("#request-summary");
 const actionList = document.querySelector("#action-list");
 const evidenceGrid = document.querySelector("#evidence-grid");
@@ -34,6 +32,8 @@ const safeSummary = document.querySelector("#safe-summary");
 const spendCeiling = document.querySelector("#spend-ceiling");
 const safeSteps = document.querySelector("#safe-steps");
 const safeState = document.querySelector("#safe-state");
+const safeIntro = document.querySelector("#safe-intro");
+const safeIcon = document.querySelector("#safe-icon");
 const receiptSection = document.querySelector("#receipt-section");
 const receiptContent = document.querySelector("#receipt-content");
 
@@ -43,14 +43,9 @@ function escapeHtml(value) {
   }[char]));
 }
 
-function updateCount() {
-  charCount.textContent = `${requestField.value.length} chars`;
-}
-
 function setLoading(loading) {
   assureButton.disabled = loading;
   runStatus.textContent = loading ? "LIVE ASSURANCE RUNNING…" : "AWAITING RUN";
-  runtimeState.textContent = loading ? "running" : "pending";
   assureButton.querySelector("span:last-child").textContent = loading ? "Assuring…" : "Run live assurance";
 }
 
@@ -128,8 +123,8 @@ function renderFrontier(evidence, evaluations) {
     <div class="frontier-column">
       <span class="mini-label">Next evidence required</span>
       <ul>
-        <li>${escapeHtml(voiceBoundary.consequence)}</li>
-        <li>Required source: ${escapeHtml(ava.source)}</li>
+        <li>Ava trailer-specific digital voice authorization</li>
+        <li>Expected source: ${escapeHtml(ava.source)}</li>
       </ul>
     </div>
   `;
@@ -173,6 +168,9 @@ function renderSafePlan(plan) {
   safeSummary.textContent = plan.summary;
   spendCeiling.textContent = plan.spend_ceiling;
   safeState.textContent = "SAFE SUBSET EXTRACTED";
+  safeState.classList.remove("pending");
+  safeIntro.classList.remove("awaiting");
+  safeIcon.textContent = "✓";
   safeSteps.innerHTML = plan.steps.map((step) => `
     <div class="safe-step ${step.status === "BLOCKED" ? "blocked" : ""}">
       <span class="step-check">${step.status === "BLOCKED" ? "×" : "✓"}</span>
@@ -212,6 +210,9 @@ async function runAssurance() {
   setLoading(true);
   setRunStage("calling");
   interpretationState.textContent = "CALLING GEMINI";
+  geminiVerification.textContent = "○";
+  geminiVerification.classList.remove("resolved");
+  geminiVerification.setAttribute("aria-label", "Awaiting Gemini response");
   runtimeProof.hidden = true;
   try {
     const response = await fetch("/api/assure", {
@@ -230,8 +231,7 @@ async function runAssurance() {
     actionCountDetail.textContent = "Returned by Gemini interpretation";
     renderActions(actions);
     setRunStage("matching");
-    evidenceRuntime.textContent = `${payload.evidence.length} facts matched`;
-    evidenceRuntime.previousElementSibling.classList.add("green");
+    evidenceRuntime.textContent = `${payload.evidence.length} evidence facts evaluated`;
     await nextPaint();
     renderEvidence(payload.evidence);
     setRunStage("applying");
@@ -247,16 +247,20 @@ async function runAssurance() {
     proofLocation.textContent = `Vertex AI · ${payload.runtime.location}`;
     proofProject.textContent = payload.runtime.project;
     runtimeProof.hidden = false;
-    runtimeState.textContent = "verified";
-    interpretationState.textContent = "VERIFIED BY GOOGLE";
-    runStatus.textContent = `LIVE GEMINI VERIFIED · ${latencyLabel}`;
+    runtimeState.textContent = `${payload.runtime.model} · Vertex AI`;
+    runtimeDot.classList.add("green");
+    topbarRuntimeDot.classList.remove("idle");
+    geminiVerification.textContent = "✓";
+    geminiVerification.classList.add("resolved");
+    geminiVerification.setAttribute("aria-label", "Structured Gemini response received");
+    interpretationState.textContent = "STRUCTURED RESPONSE RECEIVED";
+    runStatus.textContent = `LIVE GOOGLE CALL VERIFIED · ${latencyLabel} END-TO-END`;
     setRunStage("complete");
     window.latestPlan = payload.safe_plan;
   } catch (error) {
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
     interpretationState.textContent = "RUNTIME ERROR";
-    runtimeState.textContent = "error";
     runStatus.textContent = "ASSURANCE FAILED";
   } finally {
     assureButton.disabled = false;
@@ -285,11 +289,5 @@ async function applySafePlan() {
   }
 }
 
-requestField.addEventListener("input", updateCount);
 assureButton.addEventListener("click", runAssurance);
 applyButton.addEventListener("click", applySafePlan);
-resetButton.addEventListener("click", () => {
-  requestField.value = DEFAULT_REQUEST;
-  updateCount();
-});
-updateCount();

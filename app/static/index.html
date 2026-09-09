@@ -18,22 +18,25 @@
         </span>
       </a>
       <div class="topbar-meta">
-        <span class="live-dot"></span>
+        <span class="live-dot idle" id="topbar-runtime-dot"></span>
         <span>LIVE RUNTIME</span>
         <span class="separator">/</span>
-        <span id="runtime-model">GEMINI · GLOBAL</span>
+        <span id="runtime-model">AWAITING RUN</span>
       </div>
     </header>
 
     <main class="shell page">
       <section class="hero">
-        <div class="eyebrow"><span class="eyebrow-line"></span> Eclipse Protocol · P0 assurance run</div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> Eclipse Protocol · Live Assurance Demo</div>
         <h1>Capability<br /><em>exceeds</em> greenlight.</h1>
         <p class="hero-copy">
           The agent can execute more than the available evidence authorizes.
         </p>
+        <p class="product-definition">
+          Before an autonomous media agent publishes, spends, localizes, or uses a digital likeness, ActionSlate checks whether the exact action is evidence-backed.
+        </p>
         <div class="hero-foot">
-          <span class="hero-note">Semantic discovery by Gemini. Final boundary by deterministic policy.</span>
+          <span class="hero-note">Gemini interprets. Evidence decides.</span>
           <span class="hero-status" id="run-status">AWAITING RUN</span>
         </div>
       </section>
@@ -41,15 +44,12 @@
       <section class="command-panel panel">
         <div class="panel-kicker"><span>01</span> Studio Command</div>
         <div class="scenario-label">Eclipse Protocol · Instrumented Demo Scenario</div>
-        <p class="scenario-copy">A seeded studio evidence environment demonstrates the full request-to-receipt assurance flow.</p>
+        <p class="scenario-copy">An instrumented studio evidence pack represents release, rights, scheduling, delegation, and provenance systems.</p>
+        <p class="scenario-architecture">Gemini interpretation is live. Greenlight decisions are deterministic. External actions are simulated.</p>
         <div class="command-grid">
           <div class="command-input-wrap">
-            <label for="producer-request">Producer request</label>
-            <textarea id="producer-request" rows="3">Launch the Eclipse Protocol trailer worldwide tonight. Localize it for France and Spain using Ava's voice, then maximize paid reach.</textarea>
-            <div class="input-footer">
-              <span id="char-count">—</span>
-              <button class="text-button" id="reset-request" type="button">Reset scenario</button>
-            </div>
+            <label for="producer-request">Producer command · instrumented scenario</label>
+            <textarea id="producer-request" rows="3" readonly aria-readonly="true">Launch the Eclipse Protocol trailer worldwide tonight. Localize it for France and Spain using Ava's voice, then maximize paid reach.</textarea>
           </div>
           <div class="command-cta">
             <div class="command-cta-copy">
@@ -64,14 +64,14 @@
           </div>
         </div>
         <div class="runtime-strip">
-          <span class="runtime-chip"><i class="chip-dot"></i> Google runtime <b id="runtime-state">pending</b></span>
-          <span class="runtime-chip"><i class="chip-dot"></i> Evidence pack <b id="evidence-runtime">pending evaluation</b></span>
-          <span class="runtime-chip"><i class="chip-dot amber"></i> Side effects <b>simulated</b></span>
+          <span class="runtime-chip"><i class="chip-dot" id="runtime-dot"></i><span><strong>LIVE AI</strong><b id="runtime-state">Gemini 2.5 Flash · Vertex AI</b></span></span>
+          <span class="runtime-chip"><i class="chip-dot"></i><span><strong>DETERMINISTIC</strong><b id="evidence-runtime">Evidence + Greenlight Engine</b></span></span>
+          <span class="runtime-chip"><i class="chip-dot amber"></i><span><strong>SIMULATED</strong><b>External execution</b></span></span>
         </div>
         <div class="run-sequence" id="run-sequence" hidden aria-live="polite">
           <span class="sequence-step" data-stage="calling">CALLING GEMINI 2.5 FLASH</span>
           <span class="sequence-step" data-stage="interpreting">INTERPRETING CONSEQUENCES</span>
-          <span class="sequence-step" data-stage="matching">MATCHING 7 EVIDENCE FACTS</span>
+          <span class="sequence-step" data-stage="matching">EVALUATING 7 EVIDENCE FACTS</span>
           <span class="sequence-step" data-stage="applying">APPLYING GREENLIGHT RULES</span>
           <span class="sequence-step" data-stage="complete">ASSURANCE COMPLETE</span>
         </div>
@@ -101,7 +101,7 @@
             <div class="agent-badge">
               <span class="badge-mark">G</span>
               <span><b>Gemini</b><small>semantic interpreter</small></span>
-              <span class="verified-mark">✓</span>
+              <span class="verified-mark" id="gemini-verification" aria-label="Awaiting Gemini response">○</span>
             </div>
           </div>
           <div class="action-list panel" id="action-list">
@@ -161,7 +161,7 @@
             <div class="panel-kicker"><span>06</span> Capability Boundary</div>
             <h2>Power is not permission.</h2>
           </div>
-          <span class="decision-pill review" id="capability-status">AWAITING DECISION</span>
+          <span class="decision-pill neutral" id="capability-status">AWAITING DECISION</span>
         </div>
         <div class="capability-panel panel">
           <div class="capability-side">
@@ -185,11 +185,11 @@
             <div class="panel-kicker"><span>07</span> Safe Plan</div>
             <h2>Keep the green. Hold the rest.</h2>
           </div>
-          <span class="section-meta safe-label" id="safe-state">AWAITING SAFE PLAN</span>
+          <span class="section-meta safe-label pending" id="safe-state">AWAITING SAFE PLAN</span>
         </div>
         <div class="safe-layout">
-          <div class="safe-intro panel">
-            <div class="safe-icon">✓</div>
+          <div class="safe-intro panel awaiting" id="safe-intro">
+            <div class="safe-icon" id="safe-icon">—</div>
             <span class="mini-label">Bounded executable subset</span>
             <h3 id="safe-title">Awaiting bounded plan</h3>
             <p id="safe-summary">Safe subset generated after assurance.</p>
@@ -221,7 +221,7 @@
     </main>
 
     <footer class="shell footer">
-      <span>ACTIONSLATE / P0</span>
+      <span>ACTIONSLATE / AGENTIC RELEASE ASSURANCE</span>
       <span>Evidence before execution.</span>
       <span>v0.2.0</span>
     </footer>
