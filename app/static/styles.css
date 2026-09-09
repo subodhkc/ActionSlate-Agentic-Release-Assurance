@@ -72,6 +72,8 @@ h1 em { color: var(--lime); font-style: normal; }
 .command-panel::after { content: ""; position: absolute; width: 240px; height: 240px; border-radius: 50%; right: -100px; top: -160px; border: 1px solid rgba(200,250,103,.18); }
 .panel-kicker { display: flex; gap: 14px; color: var(--muted); }
 .panel-kicker span { color: var(--lime); }
+.scenario-label { margin-top: 24px; color: var(--lime); font: 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.scenario-copy { max-width: 630px; margin: 8px 0 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
 .command-grid { display: grid; grid-template-columns: 1.6fr .8fr; gap: 48px; padding: 32px 0 24px; }
 label { display: block; color: var(--dim); margin-bottom: 12px; }
 textarea {
@@ -101,6 +103,17 @@ textarea::placeholder { color: var(--dim); }
 .chip-dot { background: var(--dim); box-shadow: none; }
 .chip-dot.green { background: var(--lime); box-shadow: 0 0 7px var(--lime); }
 .chip-dot.amber { background: var(--amber); }
+.run-sequence { display: flex; flex-wrap: wrap; gap: 7px 18px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.sequence-step { color: var(--dim); font: 10px var(--mono); letter-spacing: .08em; }
+.sequence-step.current { color: var(--amber); }
+.sequence-step.complete { color: var(--lime); }
+.sequence-step.current::before, .sequence-step.complete::before { content: "●"; margin-right: 6px; }
+.sequence-step.current::before { color: var(--amber); }
+.sequence-step.complete::before { color: var(--lime); }
+.runtime-proof { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; margin-top: 15px; padding: 13px 15px; border: 1px solid rgba(200,250,103,.24); background: rgba(200,250,103,.055); color: var(--muted); font: 10px var(--mono); letter-spacing: .04em; }
+.runtime-proof-heading { color: var(--lime); letter-spacing: .1em; }
+.runtime-proof-item b { color: var(--ink); font-weight: 400; }
+.runtime-proof-item .proof-verified { color: var(--lime); }
 .section-block { margin-top: 104px; }
 .section-heading { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 22px; }
 h2 { margin: 11px 0 0; font-size: clamp(29px, 4vw, 48px); line-height: .95; letter-spacing: -.07em; font-weight: 500; }

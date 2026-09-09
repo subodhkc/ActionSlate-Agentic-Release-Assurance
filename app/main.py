@@ -70,7 +70,6 @@ async def assure(request: InterpretRequest) -> AssuranceResponse:
             runtime={
                 "sdk": "google-genai",
                 "model": settings.gemini_model,
-                "auth": "GOOGLE_API_KEY",
                 "project": settings.google_cloud_project,
                 "location": settings.google_cloud_location,
                 "verified": "true",

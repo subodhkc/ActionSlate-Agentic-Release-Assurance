@@ -34,12 +34,14 @@
         </p>
         <div class="hero-foot">
           <span class="hero-note">Semantic discovery by Gemini. Final boundary by deterministic policy.</span>
-          <span class="hero-status" id="run-status">READY TO ASSURE</span>
+          <span class="hero-status" id="run-status">AWAITING RUN</span>
         </div>
       </section>
 
       <section class="command-panel panel">
         <div class="panel-kicker"><span>01</span> Studio Command</div>
+        <div class="scenario-label">Eclipse Protocol · Instrumented Demo Scenario</div>
+        <p class="scenario-copy">A seeded studio evidence environment demonstrates the full request-to-receipt assurance flow.</p>
         <div class="command-grid">
           <div class="command-input-wrap">
             <label for="producer-request">Producer request</label>
@@ -51,20 +53,34 @@
           </div>
           <div class="command-cta">
             <div class="command-cta-copy">
-              <span class="mini-label">Compound intent detected</span>
-              <strong>3 consequential actions</strong>
-              <span>Distribution · localization · paid reach</span>
+              <span class="mini-label">Awaiting assurance</span>
+              <strong id="action-count">AWAITING RUN</strong>
+              <span id="action-count-detail">Pending Gemini interpretation</span>
             </div>
             <button class="primary-button" id="assure-button" type="button">
               <span class="button-icon">↗</span>
-              <span>Run assurance</span>
+              <span>Run live assurance</span>
             </button>
           </div>
         </div>
         <div class="runtime-strip">
-          <span class="runtime-chip"><i class="chip-dot green"></i> Google runtime <b id="runtime-state">awaiting</b></span>
-          <span class="runtime-chip"><i class="chip-dot"></i> Evidence pack <b>7 facts</b></span>
+          <span class="runtime-chip"><i class="chip-dot"></i> Google runtime <b id="runtime-state">pending</b></span>
+          <span class="runtime-chip"><i class="chip-dot"></i> Evidence pack <b id="evidence-runtime">pending evaluation</b></span>
           <span class="runtime-chip"><i class="chip-dot amber"></i> Side effects <b>simulated</b></span>
+        </div>
+        <div class="run-sequence" id="run-sequence" hidden aria-live="polite">
+          <span class="sequence-step" data-stage="calling">CALLING GEMINI 2.5 FLASH</span>
+          <span class="sequence-step" data-stage="interpreting">INTERPRETING CONSEQUENCES</span>
+          <span class="sequence-step" data-stage="matching">MATCHING 7 EVIDENCE FACTS</span>
+          <span class="sequence-step" data-stage="applying">APPLYING GREENLIGHT RULES</span>
+          <span class="sequence-step" data-stage="complete">ASSURANCE COMPLETE</span>
+        </div>
+        <div class="runtime-proof" id="runtime-proof" hidden>
+          <span class="runtime-proof-heading">LIVE GOOGLE RUNTIME</span>
+          <span class="runtime-proof-item"><b id="proof-model">Gemini 2.5 Flash</b></span>
+          <span class="runtime-proof-item" id="proof-location">Vertex AI · global</span>
+          <span class="runtime-proof-item">Google project: <b id="proof-project">actionslate</b></span>
+          <span class="runtime-proof-item">structured response: <b class="proof-verified">VERIFIED</b></span>
         </div>
       </section>
 
@@ -76,7 +92,7 @@
             <div class="panel-kicker"><span>02</span> Agent Plan</div>
             <h2>What the agent heard.</h2>
           </div>
-          <span class="section-meta" id="interpretation-state">AWAITING INTERPRETATION</span>
+          <span class="section-meta" id="interpretation-state">AWAITING RUN</span>
         </div>
         <div class="agent-layout">
           <div class="agent-summary panel">
@@ -113,7 +129,7 @@
             <div class="panel-kicker"><span>04</span> Greenlight Diff</div>
             <h2>Intent meets evidence.</h2>
           </div>
-          <span class="decision-pill review" id="overall-status">REVIEW</span>
+          <span class="decision-pill unknown" id="overall-status">AWAITING RUN</span>
         </div>
         <div class="diff-table panel" id="diff-table">
           <div class="diff-head">
@@ -169,17 +185,17 @@
             <div class="panel-kicker"><span>07</span> Safe Plan</div>
             <h2>Keep the green. Hold the rest.</h2>
           </div>
-          <span class="section-meta safe-label">SAFE SUBSET EXTRACTED</span>
+          <span class="section-meta safe-label" id="safe-state">AWAITING SAFE PLAN</span>
         </div>
         <div class="safe-layout">
           <div class="safe-intro panel">
             <div class="safe-icon">✓</div>
             <span class="mini-label">Bounded executable subset</span>
-            <h3 id="safe-title">Bounded Eclipse release</h3>
-            <p id="safe-summary">The supported subset will be staged here without producing external side effects.</p>
+            <h3 id="safe-title">Awaiting bounded plan</h3>
+            <p id="safe-summary">Safe subset generated after assurance.</p>
             <div class="spend-limit">
               <span>Delegated campaign maximum</span>
-              <strong id="spend-ceiling">$5,000</strong>
+              <strong id="spend-ceiling">Awaiting authority boundary</strong>
             </div>
             <button class="primary-button full-button" id="apply-button" type="button" disabled>
               <span class="button-icon">→</span>

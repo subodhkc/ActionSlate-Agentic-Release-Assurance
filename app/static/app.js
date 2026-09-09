@@ -9,6 +9,14 @@ const charCount = document.querySelector("#char-count");
 const errorBanner = document.querySelector("#error-banner");
 const runStatus = document.querySelector("#run-status");
 const runtimeState = document.querySelector("#runtime-state");
+const evidenceRuntime = document.querySelector("#evidence-runtime");
+const actionCount = document.querySelector("#action-count");
+const actionCountDetail = document.querySelector("#action-count-detail");
+const runSequence = document.querySelector("#run-sequence");
+const runtimeProof = document.querySelector("#runtime-proof");
+const proofModel = document.querySelector("#proof-model");
+const proofLocation = document.querySelector("#proof-location");
+const proofProject = document.querySelector("#proof-project");
 const interpretationState = document.querySelector("#interpretation-state");
 const requestSummary = document.querySelector("#request-summary");
 const actionList = document.querySelector("#action-list");
@@ -25,6 +33,7 @@ const safeTitle = document.querySelector("#safe-title");
 const safeSummary = document.querySelector("#safe-summary");
 const spendCeiling = document.querySelector("#spend-ceiling");
 const safeSteps = document.querySelector("#safe-steps");
+const safeState = document.querySelector("#safe-state");
 const receiptSection = document.querySelector("#receipt-section");
 const receiptContent = document.querySelector("#receipt-content");
 
@@ -40,9 +49,23 @@ function updateCount() {
 
 function setLoading(loading) {
   assureButton.disabled = loading;
-  runStatus.textContent = loading ? "LIVE INTERPRETATION…" : "READY TO ASSURE";
-  runtimeState.textContent = loading ? "running" : "awaiting";
-  assureButton.querySelector("span:last-child").textContent = loading ? "Interpreting…" : "Run assurance";
+  runStatus.textContent = loading ? "LIVE ASSURANCE RUNNING…" : "AWAITING RUN";
+  runtimeState.textContent = loading ? "running" : "pending";
+  assureButton.querySelector("span:last-child").textContent = loading ? "Assuring…" : "Run live assurance";
+}
+
+function setRunStage(stage) {
+  runSequence.hidden = false;
+  const stages = [...runSequence.querySelectorAll("[data-stage]")];
+  const currentIndex = stages.findIndex((item) => item.dataset.stage === stage);
+  stages.forEach((item, index) => {
+    item.classList.toggle("complete", index < currentIndex || stage === "complete");
+    item.classList.toggle("current", item.dataset.stage === stage);
+  });
+}
+
+function nextPaint() {
+  return new Promise((resolve) => window.requestAnimationFrame(resolve));
 }
 
 function renderActions(actions) {
@@ -149,6 +172,7 @@ function renderSafePlan(plan) {
   safeTitle.textContent = plan.title;
   safeSummary.textContent = plan.summary;
   spendCeiling.textContent = plan.spend_ceiling;
+  safeState.textContent = "SAFE SUBSET EXTRACTED";
   safeSteps.innerHTML = plan.steps.map((step) => `
     <div class="safe-step ${step.status === "BLOCKED" ? "blocked" : ""}">
       <span class="step-check">${step.status === "BLOCKED" ? "×" : "✓"}</span>
@@ -182,10 +206,13 @@ function renderReceipt(receipt) {
 async function runAssurance() {
   const producerRequest = requestField.value.trim();
   if (producerRequest.length < 10) return;
+  const startedAt = performance.now();
   errorBanner.hidden = true;
   receiptSection.hidden = true;
   setLoading(true);
-  interpretationState.textContent = "LIVE INTERPRETATION";
+  setRunStage("calling");
+  interpretationState.textContent = "CALLING GEMINI";
+  runtimeProof.hidden = true;
   try {
     const response = await fetch("/api/assure", {
       method: "POST",
@@ -194,26 +221,46 @@ async function runAssurance() {
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.detail || "Assurance run failed.");
+    setRunStage("interpreting");
+    interpretationState.textContent = "INTERPRETING CONSEQUENCES";
+    await nextPaint();
     requestSummary.textContent = payload.interpretation.request_summary;
-    renderActions(payload.interpretation.consequential_actions);
+    const actions = payload.interpretation.consequential_actions;
+    actionCount.textContent = `${actions.length} consequential action${actions.length === 1 ? "" : "s"}`;
+    actionCountDetail.textContent = "Returned by Gemini interpretation";
+    renderActions(actions);
+    setRunStage("matching");
+    evidenceRuntime.textContent = `${payload.evidence.length} facts matched`;
+    evidenceRuntime.previousElementSibling.classList.add("green");
+    await nextPaint();
     renderEvidence(payload.evidence);
+    setRunStage("applying");
+    await nextPaint();
     renderDiff(payload.evaluations, payload.overall_status);
     renderFrontier(payload.evidence, payload.evaluations);
     renderCapability(payload.evaluations, payload.capability_exceeds_greenlight);
     renderSafePlan(payload.safe_plan);
+    const elapsedSeconds = (performance.now() - startedAt) / 1000;
+    const latencyLabel = `${elapsedSeconds.toFixed(1)}s`;
     document.querySelector("#runtime-model").textContent = `${payload.runtime.model} · ${payload.runtime.location}`;
+    proofModel.textContent = payload.runtime.model;
+    proofLocation.textContent = `Vertex AI · ${payload.runtime.location}`;
+    proofProject.textContent = payload.runtime.project;
+    runtimeProof.hidden = false;
     runtimeState.textContent = "verified";
     interpretationState.textContent = "VERIFIED BY GOOGLE";
-    runStatus.textContent = "ASSURANCE COMPLETE";
+    runStatus.textContent = `LIVE GEMINI VERIFIED · ${latencyLabel}`;
+    setRunStage("complete");
     window.latestPlan = payload.safe_plan;
   } catch (error) {
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
     interpretationState.textContent = "RUNTIME ERROR";
     runtimeState.textContent = "error";
+    runStatus.textContent = "ASSURANCE FAILED";
   } finally {
     assureButton.disabled = false;
-    assureButton.querySelector("span:last-child").textContent = "Run assurance";
+    assureButton.querySelector("span:last-child").textContent = "Run live assurance";
   }
 }
 
@@ -246,4 +293,3 @@ resetButton.addEventListener("click", () => {
   updateCount();
 });
 updateCount();
-runAssurance();
