@@ -365,9 +365,9 @@ async function runAssurance() {
     delete window.latestExecutionToken;
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
-    interpretationState.textContent = "RUNTIME ERROR";
+    interpretationState.textContent = "LIVE INTERPRETATION FAILED — RETRY";
     document.querySelector("#runtime-model").textContent = "RUNTIME ERROR";
-    runStatus.textContent = "ASSURANCE FAILED";
+    runStatus.textContent = "ASSURANCE RETRY AVAILABLE";
   } finally {
     assureButton.disabled = false;
     assureButton.querySelector("span:last-child").textContent = "Run live assurance";
