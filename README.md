@@ -1,7 +1,6 @@
 # ActionSlate — Agentic Release Assurance
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-haiec.replit.app-C8FA67?style=for-the-badge&labelColor=0A0B0D)](https://haiec.replit.app/)
-[![CI](https://github.com/subodhkc/ActionSlate-Agentic-Release-Assurance/actions/workflows/ci.yml/badge.svg)](https://github.com/subodhkc/ActionSlate-Agentic-Release-Assurance/actions/workflows/ci.yml)
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Gemini 2.5 Flash](https://img.shields.io/badge/Gemini-2.5_Flash-8E75B2?logo=googlegemini&logoColor=white)](https://ai.google.dev/gemini-api/docs/models)
 [![Vertex AI](https://img.shields.io/badge/Google_Cloud-Vertex_AI-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/vertex-ai)
@@ -367,7 +366,7 @@ counts, limitations, and reproducible local checks are recorded in
 ### Manual live and browser validation
 
 These checks exercise the configured Google runtime and browser and therefore
-run separately from the secret-free CI workflow.
+run separately from the secret-free local validation commands.
 
 - real Gemini interpretation succeeded;
 - all seven deterministic evidence facts were returned;
@@ -388,8 +387,9 @@ uv run python -m unittest discover -s tests -v
 node --check app/static/app.js
 ```
 
-The same checks run in GitHub Actions through
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+These checks are also the recommended pre-commit validation path. The GitHub
+connector used for this project does not have permission to create workflow
+commits, so the repository does not claim a hosted CI status it cannot verify.
 
 ---
 
