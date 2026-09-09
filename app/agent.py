@@ -31,7 +31,7 @@ class AgentRuntimeError(RuntimeError):
 
 
 class ActionSlateInterpreter:
-    """Real Google Gen AI client used by the P0 runtime."""
+    """Real Google Gen AI client used by the live demo runtime."""
 
     def __init__(self, settings: Settings) -> None:
         configure_google_runtime(settings)

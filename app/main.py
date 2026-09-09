@@ -1,11 +1,12 @@
-"""ActionSlate P0 FastAPI application."""
+"""ActionSlate FastAPI application."""
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from .agent import ActionSlateInterpreter, AgentRuntimeError
@@ -21,7 +22,7 @@ from .models import (
 
 app = FastAPI(
     title="ActionSlate — Agentic Release Assurance",
-    description="P0: deterministic release assurance around a live Gemini interpretation.",
+    description="Deterministic release assurance around a live Gemini interpretation.",
     version="0.2.0",
 )
 STATIC_DIR = Path(__file__).parent / "static"
@@ -34,8 +35,8 @@ async def index() -> FileResponse:
 
 
 @app.get("/favicon.ico", include_in_schema=False)
-async def favicon() -> Response:
-    return Response(status_code=204)
+async def favicon() -> FileResponse:
+    return FileResponse(STATIC_DIR / "favicon.svg", media_type="image/svg+xml")
 
 
 @app.get("/health")
@@ -59,10 +60,20 @@ async def demo_context() -> dict[str, str]:
 
 @app.post("/api/assure", response_model=AssuranceResponse)
 async def assure(request: InterpretRequest) -> AssuranceResponse:
+    if request.producer_request.strip() != ECLIPSE_REQUEST:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "This live demo is instrumented for the fixed Eclipse Protocol "
+                "producer command."
+            ),
+        )
+
     settings = get_settings()
     try:
-        interpretation = await ActionSlateInterpreter(settings).interpret(
-            request.producer_request
+        interpretation = await asyncio.wait_for(
+            ActionSlateInterpreter(settings).interpret(request.producer_request),
+            timeout=45,
         )
         return build_assurance_response(
             producer_request=request.producer_request,
@@ -75,10 +86,21 @@ async def assure(request: InterpretRequest) -> AssuranceResponse:
                 "verified": "true",
             },
         )
+    except TimeoutError as exc:
+        raise HTTPException(
+            status_code=504,
+            detail="The live Google call timed out. Please retry.",
+        ) from exc
     except RuntimeConfigurationError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=503,
+            detail="The live Google runtime is temporarily unavailable.",
+        ) from exc
     except AgentRuntimeError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=502,
+            detail="Gemini did not return a valid structured interpretation. Please retry.",
+        ) from exc
 
 
 @app.post("/api/execute", response_model=ExecutionReceipt)

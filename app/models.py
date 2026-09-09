@@ -121,7 +121,7 @@ class ExecutionReceipt(BaseModel):
 
 
 class AssuranceResponse(BaseModel):
-    """Complete P0 response rendered by the one-page client."""
+    """Complete assurance response rendered by the one-page client."""
 
     request: str
     interpretation: ActionSlateInterpretation

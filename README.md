@@ -6,10 +6,14 @@ ActionSlate demonstrates a control boundary for consequential media agents:
 
 > The agent can execute more than the available evidence authorizes.
 
-The P0 uses the **Eclipse Protocol** release scenario to turn a producer's
+The live demo uses the **Eclipse Protocol** release scenario to turn a producer's
 compound request into a structured plan, compare every consequential argument
 with evidence, preserve the supported subset, and issue a simulation-only
 Greenlight Receipt.
+
+The browser and `/api/assure` endpoint intentionally accept only the fixed
+Eclipse Protocol producer command. This keeps the live Gemini interpretation
+aligned with the instrumented evidence pack and deterministic policy outcomes.
 
 ## Live flow
 
@@ -39,7 +43,7 @@ approval.
 - **Simulated:** external publishing, voice generation, and advertising side
   effects.
 
-## P0 evidence pack
+## Instrumented evidence pack
 
 The demonstration intentionally uses only the evidence needed for one clear
 scenario:
@@ -121,7 +125,7 @@ uv run python -m unittest discover -s tests -v
 ## Scope and compliance boundary
 
 ActionSlate is a standalone clean-room project. It does not import or depend on
-HAIEC code, packages, datasets, or runtime artifacts. P0 intentionally excludes
+HAIEC code, packages, datasets, or runtime artifacts. The demo intentionally excludes
 databases, user accounts, real publishing, real ad buying, real voice
 generation, C2PA cryptographic integration, and additional scenarios.
 

@@ -43,6 +43,66 @@ function escapeHtml(value) {
   }[char]));
 }
 
+async function postJson(url, body, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const rawBody = await response.text();
+    let payload;
+    try {
+      payload = JSON.parse(rawBody);
+    } catch {
+      throw new Error("The server returned an unreadable response. Please retry.");
+    }
+    if (!response.ok) {
+      throw new Error(payload.detail || "The request could not be completed.");
+    }
+    return payload;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error("The live request timed out. Please retry.");
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+function requireAssurancePayload(payload) {
+  const isValid =
+    payload &&
+    payload.interpretation &&
+    Array.isArray(payload.interpretation.consequential_actions) &&
+    Array.isArray(payload.evidence) &&
+    Array.isArray(payload.evaluations) &&
+    payload.safe_plan &&
+    Array.isArray(payload.safe_plan.steps) &&
+    payload.runtime &&
+    typeof payload.runtime.model === "string";
+  if (!isValid) {
+    throw new Error("The assurance response was incomplete. Please retry.");
+  }
+}
+
+function requireReceiptPayload(payload) {
+  if (
+    !payload ||
+    typeof payload.receipt_id !== "string" ||
+    payload.status !== "SIMULATED" ||
+    typeof payload.created_at !== "string" ||
+    !Array.isArray(payload.executed_subset) ||
+    !Array.isArray(payload.guardrails_applied)
+  ) {
+    throw new Error("The simulation receipt was incomplete. Please retry.");
+  }
+}
+
 function setLoading(loading) {
   assureButton.disabled = loading;
   runStatus.textContent = loading ? "LIVE ASSURANCE RUNNING…" : "AWAITING RUN";
@@ -61,6 +121,50 @@ function setRunStage(stage) {
 
 function nextPaint() {
   return new Promise((resolve) => window.requestAnimationFrame(resolve));
+}
+
+function resetResultState() {
+  applyButton.disabled = true;
+  delete window.latestPlan;
+  receiptSection.hidden = true;
+  runtimeProof.hidden = true;
+  runtimeDot.classList.remove("green");
+  topbarRuntimeDot.classList.add("idle");
+  document.querySelector("#runtime-model").textContent = "CALL IN PROGRESS";
+  geminiVerification.textContent = "○";
+  geminiVerification.classList.remove("resolved");
+  geminiVerification.setAttribute("aria-label", "Awaiting Gemini response");
+  actionCount.textContent = "ASSURANCE RUNNING";
+  actionCountDetail.textContent = "Pending Gemini interpretation";
+  requestSummary.textContent = "Gemini is interpreting the fixed producer command.";
+  actionList.innerHTML = '<div class="empty-state">Live interpretation in progress.</div>';
+  evidenceState.textContent = "AWAITING EVALUATION";
+  evidenceGrid.innerHTML = '<div class="empty-state">Evidence evaluation will follow interpretation.</div>';
+  overallStatus.textContent = "AWAITING EVALUATION";
+  overallStatus.className = "decision-pill neutral";
+  diffTable.innerHTML = `
+    <div class="diff-head">
+      <span>Consequential dimension</span>
+      <span>Scenario action</span>
+      <span>Available evidence</span>
+      <span>Decision</span>
+    </div>
+    <div class="empty-state">Evidence comparison is pending.</div>
+  `;
+  frontierContent.innerHTML = '<div class="empty-state">The proof frontier is pending.</div>';
+  capabilityStatus.textContent = "AWAITING DECISION";
+  capabilityStatus.className = "decision-pill neutral";
+  capabilityProposed.textContent = "Awaiting proposed scope";
+  capabilityEvidence.textContent = "Awaiting delegated authority";
+  capabilityConclusion.textContent = "The deterministic comparison will establish the action boundary.";
+  safeState.textContent = "AWAITING SAFE PLAN";
+  safeState.classList.add("pending");
+  safeIntro.classList.add("awaiting");
+  safeIcon.textContent = "—";
+  safeTitle.textContent = "Awaiting bounded plan";
+  safeSummary.textContent = "Safe subset generated after assurance.";
+  spendCeiling.textContent = "Awaiting authority boundary";
+  safeSteps.innerHTML = '<div class="empty-state">Safe subset will appear after evaluation.</div>';
 }
 
 function renderActions(actions) {
@@ -146,7 +250,7 @@ function renderDiff(evaluations, authoritativeStatus) {
   diffTable.innerHTML = `
     <div class="diff-head">
       <span>Consequential dimension</span>
-      <span>Proposed by agent</span>
+      <span>Scenario action</span>
       <span>Available evidence</span>
       <span>Decision</span>
     </div>
@@ -206,22 +310,17 @@ async function runAssurance() {
   if (producerRequest.length < 10) return;
   const startedAt = performance.now();
   errorBanner.hidden = true;
-  receiptSection.hidden = true;
+  resetResultState();
   setLoading(true);
   setRunStage("calling");
   interpretationState.textContent = "CALLING GEMINI";
-  geminiVerification.textContent = "○";
-  geminiVerification.classList.remove("resolved");
-  geminiVerification.setAttribute("aria-label", "Awaiting Gemini response");
-  runtimeProof.hidden = true;
   try {
-    const response = await fetch("/api/assure", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ producer_request: producerRequest }),
-    });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.detail || "Assurance run failed.");
+    const payload = await postJson(
+      "/api/assure",
+      { producer_request: producerRequest },
+      50000,
+    );
+    requireAssurancePayload(payload);
     setRunStage("interpreting");
     interpretationState.textContent = "INTERPRETING CONSEQUENCES";
     await nextPaint();
@@ -258,9 +357,12 @@ async function runAssurance() {
     setRunStage("complete");
     window.latestPlan = payload.safe_plan;
   } catch (error) {
+    applyButton.disabled = true;
+    delete window.latestPlan;
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
     interpretationState.textContent = "RUNTIME ERROR";
+    document.querySelector("#runtime-model").textContent = "RUNTIME ERROR";
     runStatus.textContent = "ASSURANCE FAILED";
   } finally {
     assureButton.disabled = false;
@@ -269,21 +371,22 @@ async function runAssurance() {
 }
 
 async function applySafePlan() {
+  assureButton.disabled = true;
   applyButton.disabled = true;
   applyButton.querySelector("span:last-child").textContent = "Simulating…";
   try {
-    const response = await fetch("/api/execute", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ plan_id: "eclipse-safe-plan" }),
-    });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.detail || "Simulation failed.");
+    const payload = await postJson(
+      "/api/execute",
+      { plan_id: "eclipse-safe-plan" },
+      15000,
+    );
+    requireReceiptPayload(payload);
     renderReceipt(payload);
   } catch (error) {
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
   } finally {
+    assureButton.disabled = false;
     applyButton.disabled = false;
     applyButton.querySelector("span:last-child").textContent = "Apply safe plan";
   }

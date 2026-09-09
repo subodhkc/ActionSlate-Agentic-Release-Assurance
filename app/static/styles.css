@@ -29,6 +29,7 @@ body {
     var(--bg);
   font-family: var(--sans);
   min-width: 320px;
+  overflow-x: hidden;
 }
 button, textarea { font: inherit; }
 button { cursor: pointer; }
@@ -139,10 +140,10 @@ h2 { margin: 11px 0 0; font-size: clamp(29px, 4vw, 48px); line-height: .95; lett
 .action-row { display: grid; grid-template-columns: 32px 1fr auto; gap: 13px; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line); }
 .action-row:last-child { border-bottom: 0; }
 .action-index { color: var(--dim); font: 10px var(--mono); }
-.action-title { font-size: 16px; letter-spacing: -.03em; }
+.action-title { font-size: 16px; letter-spacing: -.03em; overflow-wrap: anywhere; }
 .action-desc { color: var(--muted); font-size: 12px; margin-top: 4px; }
 .action-arguments { display: grid; gap: 6px; margin-top: 9px; }
-.argument { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; color: var(--muted); font: 11px var(--mono); }
+.argument { display: flex; min-width: 0; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; color: var(--muted); font: 11px var(--mono); overflow-wrap: anywhere; }
 .argument b { color: var(--ink); font-weight: 400; }
 .provenance { color: var(--blue); font-size: 9px; letter-spacing: .06em; }
 .provenance.agent_inferred { color: var(--amber); }
@@ -185,7 +186,7 @@ h2 { margin: 11px 0 0; font-size: clamp(29px, 4vw, 48px); line-height: .95; lett
 .diff-head { padding: 14px 18px; background: rgba(255,255,255,.035); color: var(--dim); font: 9px var(--mono); text-transform: uppercase; letter-spacing: .1em; }
 .diff-row { padding: 18px; border-top: 1px solid var(--line); min-height: 83px; }
 .diff-dimension { font-size: 13px; color: var(--ink); }
-.diff-proposed, .diff-evidence { font-size: 12px; line-height: 1.35; color: #c8ceca; }
+.diff-proposed, .diff-evidence { min-width: 0; font-size: 12px; line-height: 1.35; color: #c8ceca; overflow-wrap: anywhere; }
 .diff-proposed { color: var(--amber); }
 .diff-evidence { color: var(--muted); }
 .decision-pill { display: inline-flex; justify-content: center; align-items: center; padding: 6px 9px; font: 10px var(--mono); letter-spacing: .08em; width: max-content; }

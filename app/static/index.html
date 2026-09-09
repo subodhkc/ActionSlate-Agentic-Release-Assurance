@@ -4,7 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0a0b0d" />
+    <meta name="description" content="ActionSlate checks whether consequential media-agent actions are supported by release, rights, scheduling, delegation, and provenance evidence." />
+    <meta property="og:title" content="ActionSlate — Agentic Release Assurance" />
+    <meta property="og:description" content="Live Gemini interpretation. Deterministic Greenlight decisions. Simulated external execution." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://haiec.replit.app/" />
+    <meta name="twitter:card" content="summary" />
     <title>ActionSlate — Agentic Release Assurance</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
@@ -37,7 +44,7 @@
         </p>
         <div class="hero-foot">
           <span class="hero-note">Gemini interprets. Evidence decides.</span>
-          <span class="hero-status" id="run-status">AWAITING RUN</span>
+          <span class="hero-status" id="run-status" role="status" aria-live="polite">AWAITING RUN</span>
         </div>
       </section>
 
@@ -84,7 +91,7 @@
         </div>
       </section>
 
-      <div id="error-banner" class="error-banner" hidden></div>
+      <div id="error-banner" class="error-banner" role="alert" hidden></div>
 
       <section class="section-block" id="agent-section">
         <div class="section-heading">
@@ -101,7 +108,7 @@
             <div class="agent-badge">
               <span class="badge-mark">G</span>
               <span><b>Gemini</b><small>semantic interpreter</small></span>
-              <span class="verified-mark" id="gemini-verification" aria-label="Awaiting Gemini response">○</span>
+              <span class="verified-mark" id="gemini-verification" role="img" aria-label="Awaiting Gemini response">○</span>
             </div>
           </div>
           <div class="action-list panel" id="action-list">
@@ -134,7 +141,7 @@
         <div class="diff-table panel" id="diff-table">
           <div class="diff-head">
             <span>Consequential dimension</span>
-            <span>Proposed by agent</span>
+            <span>Scenario action</span>
             <span>Available evidence</span>
             <span>Decision</span>
           </div>
