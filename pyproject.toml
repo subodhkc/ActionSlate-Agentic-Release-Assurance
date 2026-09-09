@@ -1,0 +1,11 @@
+[project]
+name = "actionslate"
+version = "0.1.0"
+description = "ActionSlate — Agentic Release Assurance"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.141.1",
+    "google-genai>=2.22.0",
+    "pydantic-settings>=2.15.0",
+    "uvicorn>=0.52.4",
+]

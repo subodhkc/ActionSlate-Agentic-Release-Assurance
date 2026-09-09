@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0b0d" />
+    <title>ActionSlate — Agentic Release Assurance</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="grain"></div>
+    <header class="topbar shell">
+      <a class="brand" href="/">
+        <span class="brand-mark">AS</span>
+        <span class="brand-copy">
+          <strong>ActionSlate</strong>
+          <small>Agentic Release Assurance</small>
+        </span>
+      </a>
+      <div class="topbar-meta">
+        <span class="live-dot"></span>
+        <span>LIVE RUNTIME</span>
+        <span class="separator">/</span>
+        <span id="runtime-model">GEMINI · GLOBAL</span>
+      </div>
+    </header>
+
+    <main class="shell page">
+      <section class="hero">
+        <div class="eyebrow"><span class="eyebrow-line"></span> Eclipse Protocol · P0 assurance run</div>
+        <h1>Capability<br /><em>exceeds</em> greenlight.</h1>
+        <p class="hero-copy">
+          The agent can execute more than the available evidence authorizes.
+        </p>
+        <div class="hero-foot">
+          <span class="hero-note">Semantic discovery by Gemini. Final boundary by deterministic policy.</span>
+          <span class="hero-status" id="run-status">READY TO ASSURE</span>
+        </div>
+      </section>
+
+      <section class="command-panel panel">
+        <div class="panel-kicker"><span>01</span> Studio Command</div>
+        <div class="command-grid">
+          <div class="command-input-wrap">
+            <label for="producer-request">Producer request</label>
+            <textarea id="producer-request" rows="3">Launch the Eclipse Protocol trailer worldwide tonight. Localize it for France and Spain using Ava's voice, then maximize paid reach.</textarea>
+            <div class="input-footer">
+              <span id="char-count">—</span>
+              <button class="text-button" id="reset-request" type="button">Reset scenario</button>
+            </div>
+          </div>
+          <div class="command-cta">
+            <div class="command-cta-copy">
+              <span class="mini-label">Compound intent detected</span>
+              <strong>3 consequential actions</strong>
+              <span>Distribution · localization · paid reach</span>
+            </div>
+            <button class="primary-button" id="assure-button" type="button">
+              <span class="button-icon">↗</span>
+              <span>Run assurance</span>
+            </button>
+          </div>
+        </div>
+        <div class="runtime-strip">
+          <span class="runtime-chip"><i class="chip-dot green"></i> Google runtime <b id="runtime-state">awaiting</b></span>
+          <span class="runtime-chip"><i class="chip-dot"></i> Evidence pack <b>7 facts</b></span>
+          <span class="runtime-chip"><i class="chip-dot amber"></i> Side effects <b>simulated</b></span>
+        </div>
+      </section>
+
+      <div id="error-banner" class="error-banner" hidden></div>
+
+      <section class="section-block" id="agent-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>02</span> Agent Plan</div>
+            <h2>What the agent heard.</h2>
+          </div>
+          <span class="section-meta" id="interpretation-state">AWAITING INTERPRETATION</span>
+        </div>
+        <div class="agent-layout">
+          <div class="agent-summary panel">
+            <span class="mini-label">Request summary</span>
+            <p id="request-summary">Run assurance to let Gemini decompose the request into consequential actions.</p>
+            <div class="agent-badge">
+              <span class="badge-mark">G</span>
+              <span><b>Gemini</b><small>semantic interpreter</small></span>
+              <span class="verified-mark">✓</span>
+            </div>
+          </div>
+          <div class="action-list panel" id="action-list">
+            <div class="empty-state">No interpretation yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block" id="diff-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>03</span> Greenlight Diff</div>
+            <h2>Intent meets evidence.</h2>
+          </div>
+          <span class="decision-pill review" id="overall-status">REVIEW</span>
+        </div>
+        <div class="diff-table panel" id="diff-table">
+          <div class="diff-head">
+            <span>Consequential dimension</span>
+            <span>Proposed by agent</span>
+            <span>Available evidence</span>
+            <span>Decision</span>
+          </div>
+          <div class="empty-state">Evidence comparison will appear after the live run.</div>
+        </div>
+      </section>
+
+      <section class="section-block safe-section" id="safe-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>04</span> Safe Plan</div>
+            <h2>Keep the green. Hold the rest.</h2>
+          </div>
+          <span class="section-meta safe-label">SAFE SUBSET EXTRACTED</span>
+        </div>
+        <div class="safe-layout">
+          <div class="safe-intro panel">
+            <div class="safe-icon">✓</div>
+            <span class="mini-label">Bounded executable subset</span>
+            <h3 id="safe-title">Bounded Eclipse release</h3>
+            <p id="safe-summary">The supported subset will be staged here without producing external side effects.</p>
+            <div class="spend-limit">
+              <span>Delegated campaign maximum</span>
+              <strong id="spend-ceiling">$5,000</strong>
+            </div>
+            <button class="primary-button full-button" id="apply-button" type="button" disabled>
+              <span class="button-icon">→</span>
+              <span>Apply safe plan</span>
+            </button>
+          </div>
+          <div class="safe-steps panel" id="safe-steps">
+            <div class="empty-state">Safe subset will appear after evaluation.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block receipt-section" id="receipt-section" hidden>
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>05</span> Greenlight Receipt</div>
+            <h2>Accountable by default.</h2>
+          </div>
+          <span class="section-meta receipt-label">SIMULATED · NO SIDE EFFECTS</span>
+        </div>
+        <div class="receipt panel" id="receipt-content"></div>
+      </section>
+    </main>
+
+    <footer class="shell footer">
+      <span>ACTIONSLATE / P0</span>
+      <span>Evidence before execution.</span>
+      <span>v0.2.0</span>
+    </footer>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
