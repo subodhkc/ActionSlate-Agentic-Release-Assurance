@@ -6,6 +6,7 @@ import json
 
 from google import genai
 from google.genai import types
+from pydantic import ValidationError
 
 from .config import Settings, configure_google_runtime
 from .models import ActionSlateInterpretation
@@ -60,24 +61,38 @@ class ActionSlateInterpreter:
             "media actions it requests:\n"
             f"{json.dumps(producer_request)}"
         )
-        try:
-            response = await self.client.aio.models.generate_content(
-                model=self.settings.gemini_model,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=ACTIONSLATE_INSTRUCTION,
-                    response_mime_type="application/json",
-                    response_schema=ActionSlateInterpretation,
-                    temperature=0.1,
-                    max_output_tokens=4096,
-                    automatic_function_calling=types.AutomaticFunctionCallingConfig(
-                        disable=True
-                    ),
-                ),
-            )
-            return ActionSlateInterpretation.model_validate_json(response.text)
-        except Exception as exc:
-            raise AgentRuntimeError(
-                "Google Gen AI returned no valid ActionSlate interpretation. "
-                f"{type(exc).__name__}: {exc}"
-            ) from exc
+        config = types.GenerateContentConfig(
+            system_instruction=ACTIONSLATE_INSTRUCTION,
+            response_mime_type="application/json",
+            response_schema=ActionSlateInterpretation,
+            temperature=0.1,
+            max_output_tokens=4096,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                disable=True
+            ),
+        )
+        validation_error: ValidationError | TypeError | None = None
+        for attempt in range(2):
+            try:
+                response = await self.client.aio.models.generate_content(
+                    model=self.settings.gemini_model,
+                    contents=prompt,
+                    config=config,
+                )
+            except Exception as exc:
+                raise AgentRuntimeError(
+                    "Google Gen AI request failed before structured validation. "
+                    f"{type(exc).__name__}: {exc}"
+                ) from exc
+
+            try:
+                return ActionSlateInterpretation.model_validate_json(response.text)
+            except (ValidationError, TypeError) as exc:
+                validation_error = exc
+                if attempt == 0:
+                    continue
+
+        raise AgentRuntimeError(
+            "Google Gen AI returned no valid ActionSlate interpretation after "
+            "one bounded validation retry."
+        ) from validation_error
