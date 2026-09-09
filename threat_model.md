@@ -106,8 +106,9 @@ that no external side effects occurred.
   instruction, no tools.
 - **Sensitive information disclosure:** server-only secrets and sanitized
   errors.
-- **Supply chain:** lockfile-controlled dependencies and recurring dependency
-  scanning.
+- **Supply chain:** lockfile-controlled dependencies, immutable CI action
+  revisions, and a dated manual dependency audit documented in
+  `security_assessment.md`.
 - **Data/model poisoning:** no retrieval, uploads, fine-tuning, or mutable
   evidence source exists in this demo.
 - **Improper output handling:** typed validation, bounded output, HTML escaping,
