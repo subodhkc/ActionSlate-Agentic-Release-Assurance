@@ -59,7 +59,7 @@ Important residual risks remain documented rather than hidden:
 
 ## Reproducible repository checks
 
-GitHub Actions and local development run:
+Local development runs:
 
 ```bash
 uv sync --locked
@@ -82,7 +82,7 @@ forged execution rejection, and valid capability-gated simulation.
 ## Manual live validation
 
 The following checks require the configured Replit secrets and therefore do not
-run in public CI:
+run as part of the secret-free repository validation commands:
 
 - real Gemini 2.5 Flash interpretation through Vertex AI;
 - seven deterministic Eclipse evidence facts;
@@ -99,5 +99,4 @@ run in public CI:
 - [`README.md`](README.md) — product, architecture, usage, and verification
 - [`threat_model.md`](threat_model.md) — assets, trust boundaries, threats, and
   required guarantees
-- [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — reproducible tests and
-  syntax validation
+- The commands above are the reproducible test and syntax-validation path.
