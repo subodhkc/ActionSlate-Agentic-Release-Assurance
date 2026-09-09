@@ -5,7 +5,7 @@
 [![Gemini 2.5 Flash](https://img.shields.io/badge/Gemini-2.5_Flash-8E75B2?logo=googlegemini&logoColor=white)](https://ai.google.dev/gemini-api/docs/models)
 [![Vertex AI](https://img.shields.io/badge/Google_Cloud-Vertex_AI-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/vertex-ai)
 [![Security Model](https://img.shields.io/badge/Security_Model-Documented-2EA44F)](threat_model.md)
-[![Tests](https://img.shields.io/badge/Tests-14_passing-2EA44F)](#verified-validation)
+[![Tests](https://img.shields.io/badge/Tests-15_passing-2EA44F)](#verified-validation)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > **The agent can execute more than the available evidence authorizes.**
@@ -345,12 +345,13 @@ counts, limitations, and reproducible local checks are recorded in
 
 ### Test suite
 
-**14/14 tests pass**, covering:
+**15/15 tests pass**, covering:
 
 - `UNKNOWN` is never approval;
 - unsupported scope is excluded from the safe subset;
 - receipts remain simulation-only;
 - structured interpretation and argument provenance;
+- one bounded retry after a transient invalid structured model response;
 - non-canonical prompts are rejected before Gemini construction;
 - favicon delivery;
 - per-client replay limiting;
