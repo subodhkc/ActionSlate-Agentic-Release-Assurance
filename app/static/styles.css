@@ -225,6 +225,7 @@ h2 { margin: 11px 0 0; font-size: clamp(29px, 4vw, 48px); line-height: .95; lett
 .receipt-col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .receipt-col li { color: #cbd0cb; font-size: 12px; line-height: 1.35; padding-left: 15px; position: relative; }
 .receipt-col li::before { content: "↳"; color: var(--lime); position: absolute; left: 0; }
+.receipt-runtime-strip { margin-top: 24px; }
 .error-banner { margin-top: 18px; border: 1px solid rgba(255,118,109,.4); padding: 15px; color: var(--red); font: 11px var(--mono); white-space: pre-wrap; }
 .empty-state { padding: 34px; color: var(--dim); font: 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
 .footer { border-top: 1px solid var(--line); padding: 21px 0 28px; color: var(--dim); display: flex; justify-content: space-between; }

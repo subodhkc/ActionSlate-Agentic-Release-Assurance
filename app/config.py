@@ -40,6 +40,11 @@ class Settings(BaseSettings):
         validation_alias="GOOGLE_API_KEY",
         repr=False,
     )
+    session_secret: str | None = Field(
+        default=None,
+        validation_alias="SESSION_SECRET",
+        repr=False,
+    )
     app_name: str = "actionslate"
 
     @property

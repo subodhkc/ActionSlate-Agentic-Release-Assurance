@@ -83,6 +83,7 @@ function requireAssurancePayload(payload) {
     Array.isArray(payload.evaluations) &&
     payload.safe_plan &&
     Array.isArray(payload.safe_plan.steps) &&
+    typeof payload.execution_token === "string" &&
     payload.runtime &&
     typeof payload.runtime.model === "string";
   if (!isValid) {
@@ -126,6 +127,7 @@ function nextPaint() {
 function resetResultState() {
   applyButton.disabled = true;
   delete window.latestPlan;
+  delete window.latestExecutionToken;
   receiptSection.hidden = true;
   runtimeProof.hidden = true;
   runtimeDot.classList.remove("green");
@@ -300,7 +302,7 @@ function renderReceipt(receipt) {
       <div class="receipt-col"><h4>Executed subset</h4><ul>${receipt.executed_subset.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>
       <div class="receipt-col"><h4>Guardrails</h4><ul>${receipt.guardrails_applied.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>
     </div>
-    <div class="runtime-strip" style="margin-top:24px"><span class="runtime-chip"><i class="chip-dot green"></i> External side effects <b>${escapeHtml(receipt.external_side_effects)}</b></span></div>
+    <div class="runtime-strip receipt-runtime-strip"><span class="runtime-chip"><i class="chip-dot green"></i> External side effects <b>${escapeHtml(receipt.external_side_effects)}</b></span></div>
   `;
   receiptSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -356,9 +358,11 @@ async function runAssurance() {
     runStatus.textContent = `LIVE GOOGLE CALL VERIFIED · ${latencyLabel} END-TO-END`;
     setRunStage("complete");
     window.latestPlan = payload.safe_plan;
+    window.latestExecutionToken = payload.execution_token;
   } catch (error) {
     applyButton.disabled = true;
     delete window.latestPlan;
+    delete window.latestExecutionToken;
     errorBanner.textContent = error.message;
     errorBanner.hidden = false;
     interpretationState.textContent = "RUNTIME ERROR";
@@ -377,7 +381,10 @@ async function applySafePlan() {
   try {
     const payload = await postJson(
       "/api/execute",
-      { plan_id: "eclipse-safe-plan" },
+      {
+        plan_id: "eclipse-safe-plan",
+        execution_token: window.latestExecutionToken,
+      },
       15000,
     );
     requireReceiptPayload(payload);

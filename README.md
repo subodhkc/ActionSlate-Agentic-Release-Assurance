@@ -73,6 +73,31 @@ generation, or ad buying occurs.
 
 The API key is never returned to the browser, logged, or committed.
 
+## AI security and guardrails
+
+- **Prompt injection:** the server accepts only the exact instrumented Eclipse
+  command. The model receives it as delimited data under a separate system
+  instruction and cannot invoke functions or tools.
+- **Excessive agency:** Gemini performs interpretation only. It cannot authorize
+  actions, read evidence, publish media, synthesize voice, or purchase ads.
+- **Deterministic authorization:** model output is validated against a bounded
+  Pydantic schema. Ordinary Python applies the evidence policy, and `UNKNOWN`
+  always remains outside the executable subset.
+- **Output handling:** model strings are HTML-escaped before dynamic rendering,
+  responses are shape-checked, and a restrictive Content Security Policy is
+  applied to the application page.
+- **Cost and availability:** the public Gemini route has per-client and global
+  sliding-window limits, allows at most two concurrent model calls per process,
+  bounds retries and output tokens, and applies provider/server timeouts.
+- **Execution safety:** `/api/execute` requires a short-lived, HMAC-signed
+  capability issued by a successful assurance run and only creates an explicitly
+  `SIMULATED` receipt. There are no external action adapters or side effects.
+- **Secrets and privacy:** credentials stay server-side in Replit Secrets. The
+  demo has no accounts, database, uploads, personal-data storage, or analytics.
+
+See `threat_model.md` for trust boundaries, required guarantees, and residual
+risks.
+
 ## Run on Replit
 
 Add this Replit Secret:
@@ -111,10 +136,13 @@ curl -X POST http://localhost:5000/api/assure \
 Simulated safe-plan execution:
 
 ```bash
+TOKEN="<execution_token returned by /api/assure>"
 curl -X POST http://localhost:5000/api/execute \
   -H 'content-type: application/json' \
-  -d '{"plan_id":"eclipse-safe-plan"}'
+  -d "{\"plan_id\":\"eclipse-safe-plan\",\"execution_token\":\"$TOKEN\"}"
 ```
+
+Repeated live-assurance requests may return `429` with a `Retry-After` header.
 
 Tests:
 

@@ -1,5 +1,6 @@
 import asyncio
 import unittest
+from unittest.mock import patch
 
 from fastapi import HTTPException
 
@@ -13,11 +14,13 @@ class DemoScopeTests(unittest.TestCase):
             producer_request="Publish an unrelated cooking video tomorrow."
         )
 
-        with self.assertRaises(HTTPException) as context:
-            asyncio.run(assure(request))
+        with patch("app.main.ActionSlateInterpreter") as interpreter:
+            with self.assertRaises(HTTPException) as context:
+                asyncio.run(assure(request))
 
         self.assertEqual(context.exception.status_code, 400)
         self.assertIn("fixed Eclipse Protocol", context.exception.detail)
+        interpreter.assert_not_called()
 
     def test_favicon_is_served(self):
         response = asyncio.run(favicon())
