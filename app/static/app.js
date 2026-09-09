@@ -12,7 +12,14 @@ const runtimeState = document.querySelector("#runtime-state");
 const interpretationState = document.querySelector("#interpretation-state");
 const requestSummary = document.querySelector("#request-summary");
 const actionList = document.querySelector("#action-list");
+const evidenceGrid = document.querySelector("#evidence-grid");
+const evidenceState = document.querySelector("#evidence-state");
 const diffTable = document.querySelector("#diff-table");
+const frontierContent = document.querySelector("#frontier-content");
+const capabilityStatus = document.querySelector("#capability-status");
+const capabilityProposed = document.querySelector("#capability-proposed");
+const capabilityEvidence = document.querySelector("#capability-evidence");
+const capabilityConclusion = document.querySelector("#capability-conclusion");
 const overallStatus = document.querySelector("#overall-status");
 const safeTitle = document.querySelector("#safe-title");
 const safeSummary = document.querySelector("#safe-summary");
@@ -39,19 +46,85 @@ function setLoading(loading) {
 }
 
 function renderActions(actions) {
-  actionList.innerHTML = actions.map((action, index) => `
-    <div class="action-row">
-      <span class="action-index">0${index + 1}</span>
-      <div>
-        <div class="action-title">${escapeHtml(action.description)}</div>
-        <div class="action-desc">${escapeHtml(Object.entries(action.arguments || {}).map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(", ") : value}`).join(" · "))}</div>
+  actionList.innerHTML = actions.map((action, index) => {
+    const inferredArguments = Object.keys(action.arguments || {})
+      .filter((key) => action.argument_provenance?.[key] === "AGENT_INFERRED");
+    const inferenceCallout = inferredArguments.length
+      ? `<div class="inference-callout"><b>WHAT DID THE AGENT INFER?</b><span>${escapeHtml(inferredArguments.join(", "))} <strong>AGENT_INFERRED</strong></span></div>`
+      : "";
+    return `
+      <div class="action-row">
+        <span class="action-index">0${index + 1}</span>
+        <div>
+          <div class="action-title">${escapeHtml(action.description)}</div>
+          <div class="action-arguments">${Object.entries(action.arguments || {}).map(([key, value]) => `
+            <div class="argument">
+              <span><b>${escapeHtml(key)}</b> ${escapeHtml(Array.isArray(value) ? value.join(", ") : value)}</span>
+              <span class="provenance ${String(action.argument_provenance?.[key] || "UNKNOWN").toLowerCase()}">${escapeHtml(action.argument_provenance?.[key] || "UNKNOWN")}</span>
+            </div>
+          `).join("")}</div>
+          ${inferenceCallout}
+        </div>
+        <span class="action-type">${escapeHtml(action.action_type)}</span>
       </div>
-      <span class="action-type">${escapeHtml(action.action_type)}</span>
-    </div>
+    `;
+  }).join("");
+}
+
+function renderEvidence(evidence) {
+  evidenceState.textContent = `${evidence.length} FACTS · DETERMINISTIC`;
+  evidenceGrid.innerHTML = evidence.map((item) => `
+    <article class="evidence-item ${item.status.toLowerCase()}">
+      <div class="evidence-top"><span class="evidence-id">${escapeHtml(item.id)}</span><span class="evidence-status">${escapeHtml(item.status)}</span></div>
+      <h3>${escapeHtml(item.label)}</h3>
+      <p>${escapeHtml(item.value)}</p>
+      <small>${escapeHtml(item.source)}</small>
+    </article>
   `).join("");
 }
 
-function renderDiff(evaluations) {
+function renderFrontier(evidence, evaluations) {
+  const ava = evidence.find((item) => item.id === "ava-voice");
+  const voiceBoundary = evaluations.find((item) => item.id === "voice-gap");
+  if (!ava || !voiceBoundary) {
+    frontierContent.innerHTML = '<div class="empty-state">No unresolved proof boundary was returned.</div>';
+    return;
+  }
+  const established = evidence.filter((item) => item.status === "VERIFIED").map((item) => item.label);
+  frontierContent.innerHTML = `
+    <div class="frontier-column">
+      <span class="mini-label">Established evidence</span>
+      <ul>${established.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+    <div class="frontier-column frontier-gap">
+      <span class="mini-label">Unresolved boundary</span>
+      <strong>${escapeHtml(voiceBoundary.dimension)}</strong>
+      <p>${escapeHtml(voiceBoundary.evidence)}</p>
+      <span class="decision-pill ${voiceBoundary.status.toLowerCase()}">${escapeHtml(voiceBoundary.status)}</span>
+    </div>
+    <div class="frontier-column">
+      <span class="mini-label">Next evidence required</span>
+      <ul>
+        <li>${escapeHtml(voiceBoundary.consequence)}</li>
+        <li>Required source: ${escapeHtml(ava.source)}</li>
+      </ul>
+    </div>
+  `;
+}
+
+function renderCapability(evaluations, capabilityExceedsGreenlight) {
+  const campaignBoundary = evaluations.find((item) => item.id === "spend-boundary");
+  if (!campaignBoundary) return;
+  capabilityProposed.textContent = campaignBoundary.proposed;
+  capabilityEvidence.textContent = campaignBoundary.evidence;
+  capabilityConclusion.textContent = campaignBoundary.consequence;
+  capabilityStatus.textContent = capabilityExceedsGreenlight
+    ? "CAPABILITY EXCEEDS GREENLIGHT"
+    : "WITHIN GREENLIGHT";
+  capabilityStatus.className = `decision-pill ${capabilityExceedsGreenlight ? "review" : "allow"}`;
+}
+
+function renderDiff(evaluations, authoritativeStatus) {
   diffTable.innerHTML = `
     <div class="diff-head">
       <span>Consequential dimension</span>
@@ -68,8 +141,8 @@ function renderDiff(evaluations) {
       </div>
     `).join("")}
   `;
-  overallStatus.textContent = evaluations.some((item) => item.status === "BLOCK") ? "REVIEW" : "ALLOW";
-  overallStatus.className = `decision-pill ${overallStatus.textContent.toLowerCase()}`;
+  overallStatus.textContent = authoritativeStatus;
+  overallStatus.className = `decision-pill ${authoritativeStatus.toLowerCase()}`;
 }
 
 function renderSafePlan(plan) {
@@ -123,7 +196,10 @@ async function runAssurance() {
     if (!response.ok) throw new Error(payload.detail || "Assurance run failed.");
     requestSummary.textContent = payload.interpretation.request_summary;
     renderActions(payload.interpretation.consequential_actions);
-    renderDiff(payload.evaluations);
+    renderEvidence(payload.evidence);
+    renderDiff(payload.evaluations, payload.overall_status);
+    renderFrontier(payload.evidence, payload.evaluations);
+    renderCapability(payload.evaluations, payload.capability_exceeds_greenlight);
     renderSafePlan(payload.safe_plan);
     document.querySelector("#runtime-model").textContent = `${payload.runtime.model} · ${payload.runtime.location}`;
     runtimeState.textContent = "verified";

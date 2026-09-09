@@ -94,10 +94,23 @@
         </div>
       </section>
 
+      <section class="section-block" id="evidence-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>03</span> Evidence Ledger</div>
+            <h2>What can be proved.</h2>
+          </div>
+          <span class="section-meta" id="evidence-state">AWAITING EVIDENCE</span>
+        </div>
+        <div class="evidence-grid panel" id="evidence-grid">
+          <div class="empty-state">Evidence ledger will appear after the live run.</div>
+        </div>
+      </section>
+
       <section class="section-block" id="diff-section">
         <div class="section-heading">
           <div>
-            <div class="panel-kicker"><span>03</span> Greenlight Diff</div>
+            <div class="panel-kicker"><span>04</span> Greenlight Diff</div>
             <h2>Intent meets evidence.</h2>
           </div>
           <span class="decision-pill review" id="overall-status">REVIEW</span>
@@ -113,10 +126,47 @@
         </div>
       </section>
 
+      <section class="section-block" id="frontier-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>05</span> Proof Frontier</div>
+            <h2>Where certainty stops.</h2>
+          </div>
+          <span class="section-meta frontier-label">DETERMINISTIC READ</span>
+        </div>
+        <div class="frontier-grid panel" id="frontier-content">
+          <div class="empty-state">The proof frontier will resolve from the evidence ledger.</div>
+        </div>
+      </section>
+
+      <section class="section-block" id="capability-section">
+        <div class="section-heading">
+          <div>
+            <div class="panel-kicker"><span>06</span> Capability Boundary</div>
+            <h2>Power is not permission.</h2>
+          </div>
+          <span class="decision-pill review" id="capability-status">AWAITING DECISION</span>
+        </div>
+        <div class="capability-panel panel">
+          <div class="capability-side">
+            <span class="mini-label">Broader campaign execution</span>
+            <strong id="capability-proposed">Awaiting proposed scope</strong>
+            <p>Technical capability describes what the agent can express and prepare.</p>
+          </div>
+          <div class="capability-divider">≠</div>
+          <div class="capability-side bounded">
+            <span class="mini-label">Delegated autonomous maximum</span>
+            <strong id="capability-evidence">Awaiting delegated authority</strong>
+            <p id="capability-conclusion">The deterministic comparison will establish the action boundary.</p>
+          </div>
+          <div class="capability-note">Permission is not delegation.</div>
+        </div>
+      </section>
+
       <section class="section-block safe-section" id="safe-section">
         <div class="section-heading">
           <div>
-            <div class="panel-kicker"><span>04</span> Safe Plan</div>
+            <div class="panel-kicker"><span>07</span> Safe Plan</div>
             <h2>Keep the green. Hold the rest.</h2>
           </div>
           <span class="section-meta safe-label">SAFE SUBSET EXTRACTED</span>
@@ -145,7 +195,7 @@
       <section class="section-block receipt-section" id="receipt-section" hidden>
         <div class="section-heading">
           <div>
-            <div class="panel-kicker"><span>05</span> Greenlight Receipt</div>
+             <div class="panel-kicker"><span>08</span> Greenlight Receipt</div>
             <h2>Accountable by default.</h2>
           </div>
           <span class="section-meta receipt-label">SIMULATED · NO SIDE EFFECTS</span>
