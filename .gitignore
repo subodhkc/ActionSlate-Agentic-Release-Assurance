@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pythonlibs/
+
+# Test and tooling output
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.jsonl
+
+# Replit/editor state
+.replit.user
+.upm/
+.agents/
+
+# Prompt attachments are workspace context, not application source.
+attached_assets/
+screenshots/
